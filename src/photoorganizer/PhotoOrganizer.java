@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -35,6 +36,7 @@ public class PhotoOrganizer {
     public static void main(String[] args) {
         // TODO code application logic here
         processFolder(System.getProperty("user.dir"));
+        JOptionPane.showMessageDialog(null, "Listo!");
     }
 
     public static void processFolder(String path) {
@@ -43,7 +45,6 @@ public class PhotoOrganizer {
         for (File file : listOfFiles) {
             processFile(file);
         }
-
     }
 
     public static void processFile(File listOfFile) {
