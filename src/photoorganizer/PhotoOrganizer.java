@@ -40,8 +40,8 @@ public class PhotoOrganizer {
     public static void processFolder(String path) {
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
-        for (File listOfFile : listOfFiles) {
-            processFile(listOfFile);
+        for (File file : listOfFiles) {
+            processFile(file);
         }
 
     }
@@ -53,7 +53,6 @@ public class PhotoOrganizer {
             File file = new File(filePath);
             try {
                 Metadata metadata = ImageMetadataReader.readMetadata(file);
-
                 ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
                 if (directory != null) {
                     Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
@@ -77,7 +76,7 @@ public class PhotoOrganizer {
                         String year = simpleDateFormat.format(date);
                         moveFile(file, year, month);
                     }
-                }else {
+                } else {
                         String string = file.getName().substring(0, 9);
                         DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
                         Date date = format.parse(string);
@@ -120,12 +119,27 @@ public class PhotoOrganizer {
             File newfile = new File(System.getProperty("user.dir") + File.separatorChar + yearFolder + File.separatorChar + monthFolder + File.separatorChar + file.getName());
             if (!newfile.exists()) {
                 newfile.createNewFile();
+            } else {
+                int i = 1;
+                String fullName = file.getName();
+                String fileNameWithoutExt = "";
+                String fileExt = "";
+                int pos = fullName.lastIndexOf(".");
+                if (pos > 0) {
+                    fileNameWithoutExt = fullName.substring(0, pos);
+                    fileExt = fullName.substring(pos, fullName.length());
+                }
+                while (newfile.exists()){
+                    newfile = new File(System.getProperty("user.dir") + 
+                                    File.separatorChar + yearFolder + 
+                                    File.separatorChar + monthFolder + 
+                                    File.separatorChar + fileNameWithoutExt + 
+                                    "(" + i + ")" + fileExt) ;
+                }
             }
             InputStream inStream = new FileInputStream(file);
             OutputStream outStream = new FileOutputStream(newfile);
-
             byte[] buffer = new byte[1024];
-
             int length;
             //copy the file content in bytes 
             while ((length = inStream.read(buffer)) > 0) {
@@ -134,12 +148,10 @@ public class PhotoOrganizer {
 
             inStream.close();
             outStream.close();
-
             //delete the original file
             file.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }
