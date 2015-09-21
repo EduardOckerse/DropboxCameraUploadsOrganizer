@@ -111,7 +111,7 @@ public class PhotoOrganizer {
             outStream.close();
 
             //delete the original file
-            //file.delete();    
+            file.delete();    
         } catch (IOException e) {
             e.printStackTrace();
         }
