@@ -66,21 +66,28 @@ public class PhotoOrganizer {
                         String year = simpleDateFormat.format(date);
                         moveFile(file, year, month);
                     } else {
-                        String string = file.getName().substring(0, 9);
-                        DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
-                        date = format.parse(string);
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-                        String day = simpleDateFormat.format(date);
-                        simpleDateFormat = new SimpleDateFormat("MMMM");
-                        String month = simpleDateFormat.format(date);
-                        simpleDateFormat = new SimpleDateFormat("YYYY");
-                        String year = simpleDateFormat.format(date);
-                        moveFile(file, year, month);
+                        if (file.getName().length() > 10) {
+                            String string = file.getName().substring(0, 10);
+                            System.out.println("====> " + string);
+                            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH);
+                            date = format.parse(string);
+                            System.out.println("------====> " + date);
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+                            String day = simpleDateFormat.format(date);
+                            simpleDateFormat = new SimpleDateFormat("MMMM");
+                            String month = simpleDateFormat.format(date);
+                            simpleDateFormat = new SimpleDateFormat("YYYY");
+                            String year = simpleDateFormat.format(date);
+                            moveFile(file, year, month);
+                        }
                     }
                 } else {
-                        String string = file.getName().substring(0, 9);
-                        DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+                    if (file.getName().length() > 10) {
+                        String string = file.getName().substring(0, 10);
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
+                        System.out.println("====> " + string);
                         Date date = format.parse(string);
+                        System.out.println("------====> " + date);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
                         String day = simpleDateFormat.format(date);
                         simpleDateFormat = new SimpleDateFormat("MMMM");
@@ -89,8 +96,28 @@ public class PhotoOrganizer {
                         String year = simpleDateFormat.format(date);
                         moveFile(file, year, month);
                     }
+                }
             } catch (ImageProcessingException | IOException | ParseException ex) {
                 Logger.getLogger(PhotoOrganizer.class.getName()).log(Level.SEVERE, null, ex);
+                if (file.getName().length() > 10) {
+                    String string = file.getName().substring(0, 10);
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
+                    System.out.println("====> " + string);
+                    Date date = null;
+                    try {
+                        date = format.parse(string);
+                        System.out.println("------====> " + date);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+                        String day = simpleDateFormat.format(date);
+                        simpleDateFormat = new SimpleDateFormat("MMMM");
+                        String month = simpleDateFormat.format(date);
+                        simpleDateFormat = new SimpleDateFormat("YYYY");
+                        String year = simpleDateFormat.format(date);
+                        moveFile(file, year, month);
+                    } catch (ParseException ex1) {
+                        Logger.getLogger(PhotoOrganizer.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
             }
         } else if (listOfFile.isDirectory()) {
             processFolder(listOfFile.getAbsolutePath());
@@ -130,12 +157,12 @@ public class PhotoOrganizer {
                     fileNameWithoutExt = fullName.substring(0, pos);
                     fileExt = fullName.substring(pos, fullName.length());
                 }
-                while (newfile.exists()){
-                    newfile = new File(System.getProperty("user.dir") + 
-                                    File.separatorChar + yearFolder + 
-                                    File.separatorChar + monthFolder + 
-                                    File.separatorChar + fileNameWithoutExt + 
-                                    "(" + i + ")" + fileExt) ;
+                while (newfile.exists()) {
+                    newfile = new File(System.getProperty("user.dir")
+                            + File.separatorChar + yearFolder
+                            + File.separatorChar + monthFolder
+                            + File.separatorChar + fileNameWithoutExt
+                            + "(" + i + ")" + fileExt);
                 }
             }
             InputStream inStream = new FileInputStream(file);
